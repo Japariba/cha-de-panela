@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Shield } from 'lucide-react'
 
 const links = [
   { href: '/',       label: 'Evento' },
@@ -10,6 +11,7 @@ const links = [
 
 export default function Navbar() {
   const pathname = usePathname()
+  const adminActive = pathname.startsWith('/admin')
 
   return (
     <nav
@@ -19,7 +21,7 @@ export default function Navbar() {
       <span className="font-serif text-lg font-semibold" style={{ color: 'var(--deep)' }}>
         💍 Gustavo & Rebeca
       </span>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex items-center flex-wrap gap-2">
         {links.map(({ href, label }) => {
           const active = pathname === href
           return (
@@ -37,6 +39,19 @@ export default function Navbar() {
             </Link>
           )
         })}
+        <Link
+          href="/admin"
+          aria-label="Abrir painel admin"
+          title="Admin"
+          className="inline-flex items-center justify-center p-2 rounded-full border transition-all"
+          style={{
+            borderColor: adminActive ? 'var(--deep)' : 'var(--border)',
+            background: adminActive ? 'var(--deep)' : 'transparent',
+            color: adminActive ? 'var(--cream)' : 'var(--muted)',
+          }}
+        >
+          <Shield size={16} />
+        </Link>
       </div>
     </nav>
   )
