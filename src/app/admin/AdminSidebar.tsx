@@ -50,9 +50,17 @@ export default function AdminSidebar() {
         })}
       </nav>
 
+      <Link
+        href="/"
+        className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all mt-4 hover:opacity-80"
+        style={{ color: 'var(--muted)' }}
+      >
+        ← Voltar ao site
+      </Link>
+
       <button
         onClick={logout}
-        className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all mt-4 hover:opacity-80"
+        className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all mt-1 hover:opacity-80"
         style={{ color: 'var(--muted)' }}
       >
         🚪 Sair
