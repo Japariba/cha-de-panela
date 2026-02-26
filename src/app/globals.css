@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --cream: #fdf6ee;
+  --blush: #e8c4b0;
+  --rose: #c47d65;
+  --deep: #5a3328;
+  --sage: #8a9e84;
+  --gold: #c9a96e;
+  --muted: #9a7b72;
+  --card: #fffaf6;
+  --border: #ead9ce;
+}
+
+body {
+  background-color: var(--cream);
+  color: var(--deep);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.petal {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.15;
+  font-size: 2rem;
+  animation: float 8s ease-in-out infinite;
+}
+.petal:nth-child(1) { top: 5%;  left: 8%;  animation-delay: 0s; }
+.petal:nth-child(2) { top: 15%; right: 6%; animation-delay: 2s; font-size: 1.4rem; }
+.petal:nth-child(3) { top: 60%; left: 4%;  animation-delay: 4s; font-size: 1.6rem; }
+.petal:nth-child(4) { bottom: 10%; right: 10%; animation-delay: 1s; }
+.petal:nth-child(5) { top: 40%; right: 3%; animation-delay: 3s; font-size: 1.2rem; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-14px) rotate(8deg); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.animate-slide-up { animation: slideUp 0.3s ease; }
