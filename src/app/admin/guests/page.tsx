@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 
 export default async function AdminGuestsPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: guests } = await supabase.from('convidados').select('*').order('created_at', { ascending: false })
 
   const confirmed = (guests || []).filter((g: { confirmou: boolean }) => g.confirmou)

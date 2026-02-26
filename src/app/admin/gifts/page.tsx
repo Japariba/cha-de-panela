@@ -89,7 +89,7 @@ export default function AdminGiftsPage() {
       ) : !gifts.length ? (
         <div className="text-center py-16 rounded-2xl" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
           <div className="text-4xl mb-3">🎁</div>
-          <p className="text-sm" style={{ color: 'var(--muted)' }}>Nenhum presente ainda. Clique em "Adicionar" para começar.</p>
+          <p className="text-sm" style={{ color: 'var(--muted)' }}>Nenhum presente ainda. Clique em &quot;Adicionar&quot; para começar.</p>
         </div>
       ) : (
         <div className="space-y-3">

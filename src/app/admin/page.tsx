@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 
 export default async function AdminDashboard() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const [{ data: guests }, { data: gifts }] = await Promise.all([
     supabase.from('convidados').select('*'),
     supabase.from('presentes').select('*'),
