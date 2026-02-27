@@ -1,12 +1,13 @@
 'use client'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { Gift, House, LayoutDashboard, LogOut, Shield, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 const navItems = [
-  { href: '/admin',         icon: '📊', label: 'Dashboard' },
-  { href: '/admin/gifts',   icon: '🎁', label: 'Presentes' },
-  { href: '/admin/guests',  icon: '👥', label: 'Convidados' },
+  { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/admin/gifts', icon: Gift, label: 'Presentes' },
+  { href: '/admin/guests', icon: Users, label: 'Convidados' },
 ]
 
 export default function AdminSidebar() {
@@ -21,50 +22,56 @@ export default function AdminSidebar() {
 
   return (
     <aside
-      className="w-56 flex-shrink-0 flex flex-col py-8 px-4"
-      style={{ background: 'var(--card)', borderRight: '1px solid var(--border)' }}
+      className="w-full md:w-56 md:flex-shrink-0 flex flex-col px-3 py-3 md:py-8 md:px-4 gap-3 md:gap-0 sticky top-0 z-30"
+      style={{ background: 'var(--card)', borderRight: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}
     >
-      <div className="text-center mb-8">
-        <div className="text-2xl mb-1">💍</div>
+      <div className="text-center md:mb-8">
+        <div className="flex justify-center mb-1">
+          <Shield size={22} />
+        </div>
         <div className="font-serif text-sm font-semibold" style={{ color: 'var(--deep)' }}>Admin</div>
         <div className="text-xs" style={{ color: 'var(--muted)' }}>Gustavo & Rebeca</div>
       </div>
 
-      <nav className="space-y-1 flex-1">
-        {navItems.map(({ href, icon, label }) => {
-          const active = pathname === href
-          return (
-            <Link
-              key={href}
-              href={href}
-              className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm transition-all"
-              style={{
-                background: active ? 'var(--deep)' : 'transparent',
-                color: active ? 'var(--cream)' : 'var(--muted)',
-                fontWeight: active ? '500' : '400',
-              }}
-            >
-              <span>{icon}</span> {label}
-            </Link>
-          )
-        })}
+      <nav className="flex-1">
+        <div className="flex md:flex-col gap-1 overflow-x-auto pb-1 md:pb-0">
+          {navItems.map(({ href, icon: Icon, label }) => {
+            const active = pathname === href
+            return (
+              <Link
+                key={href}
+                href={href}
+                className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm transition-all whitespace-nowrap"
+                style={{
+                  background: active ? 'var(--deep)' : 'transparent',
+                  color: active ? 'var(--cream)' : 'var(--muted)',
+                  fontWeight: active ? '500' : '400',
+                }}
+              >
+                <Icon size={16} /> {label}
+              </Link>
+            )
+          })}
+        </div>
       </nav>
 
-      <Link
-        href="/"
-        className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all mt-4 hover:opacity-80"
-        style={{ color: 'var(--muted)' }}
-      >
-        ← Voltar ao site
-      </Link>
+      <div className="grid grid-cols-2 md:grid-cols-1 gap-1 md:mt-4">
+        <Link
+          href="/"
+          className="flex items-center justify-center md:justify-start gap-2 px-3 py-2.5 rounded-xl text-sm transition-all hover:opacity-80"
+          style={{ color: 'var(--muted)' }}
+        >
+          <House size={16} /> Voltar ao site
+        </Link>
 
-      <button
-        onClick={logout}
-        className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all mt-1 hover:opacity-80"
-        style={{ color: 'var(--muted)' }}
-      >
-        🚪 Sair
-      </button>
+        <button
+          onClick={logout}
+          className="flex items-center justify-center md:justify-start gap-2 px-3 py-2.5 rounded-xl text-sm transition-all hover:opacity-80"
+          style={{ color: 'var(--muted)' }}
+        >
+          <LogOut size={16} /> Sair
+        </button>
+      </div>
     </aside>
   )
 }
