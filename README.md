@@ -1,138 +1,181 @@
-# 🎉 Chá de Panela — Gustavo & Rebeca
-## Guia Completo de Deploy
+# Cha de Panela - Gustavo & Rebeca
 
----
+Aplicacao web para:
+- pagina publica do evento
+- confirmacao de presenca
+- lista de presentes com reserva/pagamento
+- painel administrativo protegido por login Supabase
 
-## 📋 Pré-requisitos
-- Node.js 18+ instalado
-- Conta no [Supabase](https://supabase.com) (gratuito)
-- Conta na [Vercel](https://vercel.com) (gratuito)
-- Conta no [GitHub](https://github.com) (gratuito)
+Projeto em Next.js + Supabase, pronto para deploy na Vercel.
 
----
+## Stack
+- Next.js 15 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS
+- Supabase (Auth + Postgres + RLS)
+- Lucide React (icones)
 
-## PASSO 1 — Configurar o Supabase
+## Funcionalidades
+- Home com informacoes do evento, link de localizacao e chave Pix.
+- Confirmacao de presenca em formulario publico.
+- Lista de presentes publica com duas opcoes:
+  - marcar como `pago` (Pix)
+  - marcar como `reservado` (compra fisica)
+- Painel admin com:
+  - dashboard de metricas
+  - CRUD de presentes
+  - listagem de convidados
+- Protecao de rotas `/admin/*` por sessao Supabase.
+- Script para importar presentes em lote.
 
-### 1.1 Criar o projeto
-1. Acesse supabase.com → **New Project**
-2. Nome: `cha-de-panela`, escolha uma senha forte
-3. Região: **South America (São Paulo)**
-4. Clique em **Create** e aguarde ~2 minutos
+## Rotas
 
-### 1.2 Criar as tabelas
-1. Menu lateral → **SQL Editor → New query**
-2. Cole todo o conteúdo do arquivo `supabase_schema.sql`
-3. Clique em **Run** ▶️ — verá `Success. No rows returned`
+### Publicas
+- `/` - pagina inicial do evento
+- `/presenca` - confirmacao de presenca
+- `/rsvp` - alias que reaproveita a pagina de presenca
+- `/gifts` - lista de presentes
 
-### 1.3 Criar o usuário admin
-1. Menu lateral → **Authentication → Users**
-2. **Add user → Create new user**
-3. Preencha seu email e uma senha forte → **Create user**
+### Admin
+- `/admin/login` - login
+- `/admin` - dashboard
+- `/admin/gifts` - gerenciamento de presentes
+- `/admin/guests` - convidados/RSVP
 
-> ⚠️ Guarde esses dados — são o login do painel /admin
+## Estrutura do projeto
 
-### 1.4 Pegar as credenciais da API
-1. Menu lateral → **Project Settings → API**
-2. Copie: **Project URL** e a chave **anon public** (começa com `eyJ...`)
+```txt
+src/
+  app/
+    page.tsx
+    presenca/page.tsx
+    rsvp/page.tsx
+    gifts/
+      page.tsx
+      GiftsList.tsx
+    admin/
+      layout.tsx
+      page.tsx
+      login/page.tsx
+      gifts/page.tsx
+      guests/page.tsx
+    CopyPix.tsx
+    globals.css
+  components/
+    Navbar.tsx
+    Petals.tsx
+    Toast.tsx
+  lib/
+    supabase/
+      client.ts
+      server.ts
+    types.ts
+  proxy.ts
+scripts/
+  import-gifts.mjs
+supabase_schema.sql
+```
 
----
+## Requisitos
+- Node.js 18+
+- Projeto no Supabase
+- Usuario admin criado no Supabase Auth
 
-## PASSO 2 — Testar localmente (opcional)
+## Configuracao do Supabase
+1. Crie um projeto no Supabase.
+2. Abra `SQL Editor` e execute o arquivo `supabase_schema.sql`.
+3. Em `Authentication > Users`, crie um usuario admin (email/senha).
+4. Em `Project Settings > API`, copie:
+   - `Project URL`
+   - `anon public key`
+   - `service_role key` (usada apenas para importacao em lote)
+
+## Variaveis de ambiente
+Crie um arquivo `.env.local` na raiz:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://SEU-PROJETO.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=SUA_ANON_KEY
+```
+
+Para rodar o importador em lote, tambem defina a service role key no terminal:
+
+```powershell
+$env:SUPABASE_SERVICE_ROLE_KEY="SUA_SERVICE_ROLE_KEY"
+```
+
+## Rodando localmente
 
 ```bash
-# Instalar dependências
 npm install
-
-# Criar e editar o arquivo de variáveis
-cp .env.local.example .env.local
-# Preencha com sua URL e chave do Supabase
-
-# Rodar
 npm run dev
-# Acesse: http://localhost:3000
 ```
 
----
+Acesse: `http://localhost:3000`
 
-## PASSO 3 — Subir no GitHub
+## Scripts disponiveis
+- `npm run dev` - ambiente de desenvolvimento
+- `npm run build` - build de producao
+- `npm run start` - servidor da build
+- `npm run lint` - lint do projeto
+- `npm run import:gifts` - importa presentes em lote no Supabase
 
-```bash
-git init
-git add .
-git commit -m "chore: initial commit"
+## Importacao em lote de presentes
+O script `scripts/import-gifts.mjs`:
+- le `.env.local` automaticamente
+- conecta no Supabase com `SUPABASE_SERVICE_ROLE_KEY`
+- evita duplicados por nome (normalizado, sem acento/case)
+- insere presentes com `status = disponivel`
 
-# Crie um repositório PRIVADO no GitHub, depois:
-git remote add origin https://github.com/SEU_USUARIO/cha-de-panela.git
-git branch -M main
-git push -u origin main
+Execucao:
+
+```powershell
+$env:SUPABASE_SERVICE_ROLE_KEY="SUA_SERVICE_ROLE_KEY"
+npm run import:gifts
 ```
 
----
+## Autenticacao e seguranca
+- Rotas `/admin/*` sao protegidas em `src/proxy.ts`.
+- Usuario nao autenticado em rota admin e redirecionado para `/admin/login`.
+- Usuario autenticado em `/admin/login` e redirecionado para `/admin`.
+- RLS habilitado em `convidados` e `presentes` no banco.
 
-## PASSO 4 — Deploy na Vercel
+Resumo de politicas atuais (`supabase_schema.sql`):
+- publico pode inserir e ler `convidados`
+- publico pode ler e atualizar `presentes`
+- usuario autenticado pode tudo em ambas as tabelas
 
-### 4.1 Importar o projeto
-1. vercel.com → **Add New → Project**
-2. **Import Git Repository** → selecione `cha-de-panela`
-3. Clique em **Import**
+## Dados do evento
+As informacoes centrais do evento estao em:
+- `src/lib/types.ts` (`EVENT_INFO`)
 
-### 4.2 Variáveis de ambiente
-Antes de fazer deploy, adicione em **Environment Variables**:
+Campos:
+- nome
+- data
+- horario
+- local
+- maps_url
+- chave_pix
 
-| Nome | Valor |
-|------|-------|
-| `NEXT_PUBLIC_SUPABASE_URL` | `https://xxxxx.supabase.co` |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJ...` |
+## Deploy (Vercel)
+1. Suba o projeto para GitHub.
+2. Importe o repositorio na Vercel.
+3. Configure as variaveis:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+4. Deploy.
 
-### 4.3 Fazer o deploy
-1. Clique em **Deploy** e aguarde ~2 minutos
-2. 🎉 Seu site estará em: `https://cha-de-panela.vercel.app`
+## Troubleshooting
+- `Invalid API key`
+  - revise `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- erro de tabela inexistente
+  - execute novamente `supabase_schema.sql`
+- login admin nao funciona
+  - confirme usuario em `Authentication > Users`
+- importacao em lote falha com permissao
+  - verifique `SUPABASE_SERVICE_ROLE_KEY` no terminal
 
-> A cada `git push`, a Vercel faz o redeploy automático!
-
----
-
-## PASSO 5 — Domínio personalizado (opcional)
-
-Quer uma URL como `charebecaegustavo.com.br`?
-1. Compre um domínio no Registro.br (~R$40/ano)
-2. Vercel → **Settings → Domains → Add Domain**
-3. Siga as instruções de DNS
-
----
-
-## 🗺️ Mapa de páginas
-
-| URL | Quem acessa | Descrição |
-|-----|-------------|-----------|
-| `/` | Todos | Página principal do evento |
-| `/rsvp` | Todos | Confirmar presença |
-| `/gifts` | Todos | Lista de presentes |
-| `/admin/login` | Você | Login do painel |
-| `/admin` | Você | Dashboard |
-| `/admin/gifts` | Você | Gerenciar presentes |
-| `/admin/guests` | Você | Ver convidados |
-
----
-
-## 🔐 Primeiro acesso ao Admin
-
-1. Acesse `sua-url.vercel.app/admin/login`
-2. Use o email e senha do Passo 1.3
-3. Vá em **Presentes** para cadastrar os itens da lista
-
----
-
-## ❓ Problemas comuns
-
-| Erro | Solução |
-|------|---------|
-| "Invalid API key" | Verifique a `ANON_KEY` nas variáveis da Vercel |
-| "relation does not exist" | Execute o SQL do `supabase_schema.sql` novamente |
-| Login não funciona | Confirme o usuário em Authentication → Users no Supabase |
-
----
-
-## 💰 Custo total: R$ 0,00
-
-Supabase + Vercel + GitHub são **100% gratuitos** para esse volume de uso!
+## Observacoes
+- A rota oficial para confirmacao de presenca esta em `/presenca`.
+- `/rsvp` permanece como alias para compatibilidade.
