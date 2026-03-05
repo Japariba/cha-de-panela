@@ -62,7 +62,7 @@ export default function HomePage() {
           {/* CTAs */}
           <div className="flex flex-wrap justify-center gap-3">
             <Link
-              href="/rsvp"
+              href="/presenca"
               className="text-sm font-medium px-7 py-3 rounded-full transition-all hover:-translate-y-0.5"
               style={{ background: 'var(--deep)', color: 'var(--cream)', boxShadow: '0 4px 18px rgba(90,51,40,0.2)' }}
             >

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .ts,.tsx"
+    "lint": "eslint . --ext .ts,.tsx",
+    "import:gifts": "node scripts/import-gifts.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.3.0",
