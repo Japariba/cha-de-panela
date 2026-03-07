@@ -16,9 +16,9 @@ export default function Navbar() {
   return (
     <nav
       className="sticky top-0 z-50 flex items-center justify-between flex-wrap gap-2 px-5 py-3"
-      style={{ background: 'rgba(253,246,238,0.94)', backdropFilter: 'blur(8px)', borderBottom: '1px solid var(--border)' }}
+      style={{ background: 'rgba(13,13,13,0.92)', backdropFilter: 'blur(8px)', borderBottom: '1px solid var(--border)' }}
     >
-      <Link href="/" className="font-serif text-lg font-semibold" style={{ color: 'var(--deep)' }}>
+      <Link href="/" className="font-serif text-lg font-semibold" style={{ color: 'var(--text)' }}>
         💍 Gustavo & Rebeca
       </Link>
       <div className="flex items-center flex-wrap gap-2">
@@ -30,9 +30,9 @@ export default function Navbar() {
               href={href}
               className="text-xs px-3 py-1.5 rounded-full border transition-all"
               style={{
-                borderColor: active ? 'var(--deep)' : 'var(--border)',
-                background:  active ? 'var(--deep)' : 'transparent',
-                color:       active ? 'var(--cream)' : 'var(--muted)',
+                borderColor: active ? 'var(--accent)' : 'var(--border)',
+                background:  active ? 'var(--accent)' : 'transparent',
+                color:       active ? '#0d0d0d' : 'var(--muted)',
               }}
             >
               {label}
@@ -45,9 +45,9 @@ export default function Navbar() {
           title="Admin"
           className="inline-flex items-center justify-center p-2 rounded-full border transition-all"
           style={{
-            borderColor: adminActive ? 'var(--deep)' : 'var(--border)',
-            background: adminActive ? 'var(--deep)' : 'transparent',
-            color: adminActive ? 'var(--cream)' : 'var(--muted)',
+            borderColor: adminActive ? 'var(--accent)' : 'var(--border)',
+            background: adminActive ? 'var(--accent)' : 'transparent',
+            color: adminActive ? '#0d0d0d' : 'var(--muted)',
           }}
         >
           <Shield size={16} />

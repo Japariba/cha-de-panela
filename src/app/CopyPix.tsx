@@ -14,7 +14,7 @@ export default function CopyPix({ value }: { value: string }) {
     <button
       onClick={copy}
       className="text-xs font-medium transition-colors"
-      style={{ background: 'none', border: 'none', color: copied ? 'var(--sage)' : 'var(--rose)', cursor: 'pointer' }}
+      style={{ background: 'none', border: 'none', color: copied ? 'var(--accent-2)' : 'var(--accent)', cursor: 'pointer' }}
     >
       {copied ? '✓ Copiado!' : '📋 Copiar chave'}
     </button>

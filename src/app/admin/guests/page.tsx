@@ -1,4 +1,4 @@
-﻿import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 
 type GuestRow = {
   id: string
@@ -25,7 +25,7 @@ export default async function AdminGuestsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl md:text-3xl font-light mb-1" style={{ color: 'var(--deep)' }}>
+      <h1 className="font-serif text-2xl md:text-3xl font-light mb-1" style={{ color: 'var(--text)' }}>
         Convidados
       </h1>
       <p className="text-sm mb-6" style={{ color: 'var(--muted)' }}>
@@ -34,12 +34,12 @@ export default async function AdminGuestsPage() {
 
       <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--border)' }}>
         {!guests?.length ? (
-          <div className="py-16 text-center text-sm italic" style={{ color: 'var(--muted)', background: 'var(--card)' }}>
+          <div className="py-16 text-center text-sm italic" style={{ color: 'var(--muted)', background: 'var(--surface)' }}>
             Nenhuma resposta de RSVP ainda.
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] text-sm" style={{ background: 'var(--card)' }}>
+            <table className="w-full min-w-[760px] text-sm" style={{ background: 'var(--surface)' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border)' }}>
                   {['Nome', 'WhatsApp', 'Status', 'Acomp.', 'Data'].map((header) => (
@@ -55,27 +55,27 @@ export default async function AdminGuestsPage() {
               </thead>
               <tbody>
                 {(guests as GuestRow[]).map((guest) => (
-                  <tr key={guest.id} style={{ borderBottom: '1px solid #f0e8e0' }}>
-                    <td className="px-5 py-3 font-medium">{guest.nome}</td>
-                    <td className="px-5 py-3" style={{ color: 'var(--muted)' }}>{guest.telefone || '-'}</td>
+                  <tr key={guest.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                    <td className="px-5 py-3 font-medium" style={{ color: 'var(--text)' }}>{guest.nome}</td>
+                    <td className="px-5 py-3" style={{ color: 'var(--text)' }}>{guest.telefone || '-'}</td>
                     <td className="px-5 py-3">
                       <span
                         className="text-xs px-2.5 py-0.5 rounded-full font-medium"
                         style={
                           guest.confirmou
-                            ? { background: '#edf6ea', color: '#4a8c40' }
-                            : { background: '#fde8e8', color: '#b03030' }
+                            ? { background: '#1a2a1a', color: '#8fd08f' }
+                            : { background: '#2a1616', color: '#d27f7f' }
                         }
                       >
                         {guest.confirmou ? 'Confirmado' : 'Nao vai'}
                       </span>
                     </td>
-                    <td className="px-5 py-3" style={{ color: 'var(--muted)' }}>
+                    <td className="px-5 py-3" style={{ color: 'var(--text)' }}>
                       {guest.confirmou
                         ? `${1 + guest.qtd_acompanhantes} pessoa${1 + guest.qtd_acompanhantes > 1 ? 's' : ''}`
                         : '-'}
                     </td>
-                    <td className="px-5 py-3 text-xs" style={{ color: 'var(--muted)' }}>
+                    <td className="px-5 py-3 text-xs" style={{ color: 'var(--text)' }}>
                       {new Date(guest.created_at).toLocaleDateString('pt-BR')}
                     </td>
                   </tr>
@@ -88,3 +88,4 @@ export default async function AdminGuestsPage() {
     </div>
   )
 }
+

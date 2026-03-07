@@ -2,7 +2,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
-import Petals from '@/components/Petals'
 import { createClient } from '@/lib/supabase/client'
 
 export default function RSVPPage() {
@@ -35,10 +34,9 @@ export default function RSVPPage() {
 
   return (
     <>
-      <Petals />
       <Navbar />
       <main className="relative z-10 max-w-lg mx-auto px-6 py-12">
-        <h1 className="font-serif font-light text-4xl text-center mb-2" style={{ color: 'var(--deep)' }}>
+        <h1 className="font-serif font-light text-4xl text-center mb-2" style={{ color: 'var(--text)' }}>
           Confirmar Presença
         </h1>
         <p className="text-center text-sm mb-8 leading-relaxed" style={{ color: 'var(--muted)' }}>
@@ -46,7 +44,7 @@ export default function RSVPPage() {
         </p>
 
         {!success ? (
-          <form onSubmit={handleSubmit} className="rounded-2xl p-7 space-y-5" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+          <form onSubmit={handleSubmit} className="rounded-2xl p-7 space-y-5" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
             {/* Nome */}
             <div>
               <label className="block text-xs uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--muted)' }}>
@@ -58,7 +56,7 @@ export default function RSVPPage() {
                 onChange={e => setNome(e.target.value)}
                 placeholder="Ex: Ana Paula Silva"
                 className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-colors"
-                style={{ background: 'var(--cream)', border: '1.5px solid var(--border)', color: 'var(--deep)' }}
+                style={{ background: 'var(--surface-2)', border: '1.5px solid var(--border)', color: 'var(--text)' }}
               />
             </div>
 
@@ -73,7 +71,7 @@ export default function RSVPPage() {
                 onChange={e => setTelefone(e.target.value)}
                 placeholder="(19) 99999-9999"
                 className="w-full px-4 py-3 rounded-xl text-sm outline-none"
-                style={{ background: 'var(--cream)', border: '1.5px solid var(--border)', color: 'var(--deep)' }}
+                style={{ background: 'var(--surface-2)', border: '1.5px solid var(--border)', color: 'var(--text)' }}
               />
             </div>
 
@@ -91,9 +89,9 @@ export default function RSVPPage() {
                     className="flex-1 py-2.5 rounded-xl text-sm transition-all"
                     style={{
                       border: '1.5px solid',
-                      borderColor: vai === v ? 'var(--rose)' : 'var(--border)',
-                      background:  vai === v ? '#f9eee9' : 'var(--cream)',
-                      color:       vai === v ? 'var(--rose)' : 'var(--deep)',
+                      borderColor: vai === v ? 'var(--accent)' : 'var(--border)',
+                      background:  vai === v ? 'var(--surface)' : 'var(--surface-2)',
+                      color:       vai === v ? 'var(--accent)' : 'var(--text)',
                       fontWeight:  vai === v ? '500' : '400',
                     }}
                   >
@@ -113,7 +111,7 @@ export default function RSVPPage() {
                   value={acomp}
                   onChange={e => setAcomp(Number(e.target.value))}
                   className="w-full px-4 py-3 rounded-xl text-sm outline-none"
-                  style={{ background: 'var(--cream)', border: '1.5px solid var(--border)', color: 'var(--deep)', appearance: 'none' }}
+                  style={{ background: 'var(--surface-2)', border: '1.5px solid var(--border)', color: 'var(--text)', appearance: 'none' }}
                 >
                   <option value={0}>Só eu</option>
                   {[1,2,3,4].map(n => <option key={n} value={n}>+ {n} pessoa{n > 1 ? 's' : ''}</option>)}
@@ -127,18 +125,18 @@ export default function RSVPPage() {
               type="submit"
               disabled={loading}
               className="w-full py-3.5 rounded-full text-sm font-medium transition-all hover:-translate-y-0.5 disabled:opacity-60"
-              style={{ background: 'var(--deep)', color: 'var(--cream)' }}
+              style={{ background: 'var(--accent)', color: '#0d0d0d' }}
             >
               {loading ? 'Salvando…' : 'Confirmar presença →'}
             </button>
           </form>
         ) : (
-          <div className="rounded-2xl p-8 text-center" style={{ background: '#f0f7ee', border: '1px solid #c2dab9' }}>
+          <div className="rounded-2xl p-8 text-center" style={{ background: '#0f1a0f', border: '1px solid #2a4a2a' }}>
             <div className="text-5xl mb-4">{vai === 'sim' ? '🎉' : '💙'}</div>
-            <h2 className="font-serif text-2xl mb-2" style={{ color: '#3a6e30' }}>
+            <h2 className="font-serif text-2xl mb-2" style={{ color: '#b9e0b9' }}>
               {vai === 'sim' ? `Presença confirmada, ${nome}!` : `Tudo certo, ${nome}`}
             </h2>
-            <p className="text-sm mb-6" style={{ color: '#5a8a52' }}>
+            <p className="text-sm mb-6" style={{ color: '#93c793' }}>
               {vai === 'sim'
                 ? 'Que alegria! Te esperamos no dia 29 de Março com muito amor. 💍'
                 : 'Sentiremos sua falta, mas obrigada por avisar!'}
@@ -146,7 +144,7 @@ export default function RSVPPage() {
             <Link
               href="/gifts"
               className="inline-block text-sm font-medium px-6 py-3 rounded-full border transition-all hover:-translate-y-0.5"
-              style={{ border: '1.5px solid var(--deep)', color: 'var(--deep)' }}
+              style={{ border: '1.5px solid var(--accent)', color: 'var(--accent)' }}
             >
               Ver lista de presentes 🎁
             </Link>
@@ -156,3 +154,6 @@ export default function RSVPPage() {
     </>
   )
 }
+
+
+

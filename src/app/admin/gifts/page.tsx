@@ -9,9 +9,9 @@ const ICONS = ['🎁','🥘','🍳','🔪','🧺','🥗','☕','🧴','🍽️',
 const emptyForm = { nome: '', descricao: '', valor_sugerido: '', icone: '🎁' }
 
 const statusStyle: Record<string, { bg: string; color: string; label: string }> = {
-  disponivel: { bg: '#edf6ea', color: '#4a8c40',  label: '✅ Disponível' },
-  reservado:  { bg: '#fff4e0', color: '#b07720',  label: '🟡 Reservado' },
-  pago:       { bg: '#f0e8f6', color: '#7040a0',  label: '🟣 Pago via Pix' },
+  disponivel: { bg: '#1a2a1a', color: '#8fd08f',  label: '✅ Disponível' },
+  reservado:  { bg: '#2b2418', color: '#d0aa68',  label: '🟡 Reservado' },
+  pago:       { bg: '#271f31', color: '#b79adb',  label: '🟣 Pago via Pix' },
 }
 
 export default function AdminGiftsPage() {
@@ -72,13 +72,13 @@ export default function AdminGiftsPage() {
     <div>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h1 className="font-serif text-3xl font-light" style={{ color: 'var(--deep)' }}>Presentes</h1>
+          <h1 className="font-serif text-3xl font-light" style={{ color: 'var(--text)' }}>Presentes</h1>
           <p className="text-sm" style={{ color: 'var(--muted)' }}>{gifts.length} item(s) cadastrado(s)</p>
         </div>
         <button
           onClick={openAdd}
           className="text-sm font-medium px-5 py-2.5 rounded-full transition-all hover:-translate-y-0.5"
-          style={{ background: 'var(--deep)', color: 'var(--cream)' }}
+          style={{ background: 'var(--accent)', color: '#0d0d0d' }}
         >
           + Adicionar presente
         </button>
@@ -87,7 +87,7 @@ export default function AdminGiftsPage() {
       {loading ? (
         <div className="text-center py-12 text-sm" style={{ color: 'var(--muted)' }}>Carregando…</div>
       ) : !gifts.length ? (
-        <div className="text-center py-16 rounded-2xl" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+        <div className="text-center py-16 rounded-2xl" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
           <div className="text-4xl mb-3">🎁</div>
           <p className="text-sm" style={{ color: 'var(--muted)' }}>Nenhum presente ainda. Clique em &quot;Adicionar&quot; para começar.</p>
         </div>
@@ -96,14 +96,14 @@ export default function AdminGiftsPage() {
           {gifts.map(g => {
             const st = statusStyle[g.status]
             return (
-              <div key={g.id} className="flex items-center gap-4 rounded-2xl p-4" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+              <div key={g.id} className="flex items-center gap-4 rounded-2xl p-4" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
                 <div className="text-2xl">{g.icone || '🎁'}</div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm" style={{ color: 'var(--deep)' }}>{g.nome}</div>
+                  <div className="font-medium text-sm" style={{ color: 'var(--text)' }}>{g.nome}</div>
                   {g.descricao && <div className="text-xs" style={{ color: 'var(--muted)' }}>{g.descricao}</div>}
                   <div className="flex items-center gap-2 mt-1 flex-wrap">
                     {g.valor_sugerido && (
-                      <span className="text-xs font-medium" style={{ color: 'var(--rose)' }}>
+                      <span className="text-xs font-medium" style={{ color: 'var(--accent)' }}>
                         R$ {g.valor_sugerido.toFixed(2).replace('.', ',')}
                       </span>
                     )}
@@ -125,7 +125,7 @@ export default function AdminGiftsPage() {
                     ✏️
                   </button>
                   <button onClick={() => setDeleteId(g.id)} className="text-xs px-3 py-1.5 rounded-full border transition-all"
-                    style={{ border: '1px solid #fca5a5', color: '#b03030' }}>
+                    style={{ border: '1px solid var(--danger)', color: '#d27f7f' }}>
                     🗑️
                   </button>
                 </div>
@@ -138,10 +138,10 @@ export default function AdminGiftsPage() {
       {/* ADD / EDIT MODAL */}
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6"
-          style={{ background: 'rgba(58,37,32,0.45)', backdropFilter: 'blur(4px)' }}
+          style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}
           onClick={e => { if (e.target === e.currentTarget) setShowForm(false) }}>
-          <div className="rounded-2xl p-7 w-full max-w-md animate-slide-up" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
-            <h3 className="font-serif text-2xl mb-5" style={{ color: 'var(--deep)' }}>
+          <div className="rounded-2xl p-7 w-full max-w-md animate-slide-up" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+            <h3 className="font-serif text-2xl mb-5" style={{ color: 'var(--text)' }}>
               {editId ? '✏️ Editar presente' : '+ Novo presente'}
             </h3>
 
@@ -152,7 +152,7 @@ export default function AdminGiftsPage() {
                 {ICONS.map(ic => (
                   <button key={ic} type="button" onClick={() => setForm(f => ({ ...f, icone: ic }))}
                     className="w-8 h-8 text-lg rounded-lg transition-all"
-                    style={{ background: form.icone === ic ? 'var(--blush)' : 'var(--cream)', border: `1.5px solid ${form.icone === ic ? 'var(--rose)' : 'var(--border)'}` }}>
+                    style={{ background: form.icone === ic ? 'var(--surface)' : 'var(--surface-2)', border: `1.5px solid ${form.icone === ic ? 'var(--accent)' : 'var(--border)'}` }}>
                     {ic}
                   </button>
                 ))}
@@ -171,7 +171,7 @@ export default function AdminGiftsPage() {
                     value={form[key as keyof typeof form]}
                     onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
                     className="w-full px-4 py-2.5 rounded-xl text-sm outline-none"
-                    style={{ background: 'var(--cream)', border: '1.5px solid var(--border)', color: 'var(--deep)' }}
+                    style={{ background: 'var(--surface-2)', border: '1.5px solid var(--border)', color: 'var(--text)' }}
                   />
                 </div>
               ))}
@@ -179,12 +179,12 @@ export default function AdminGiftsPage() {
 
             <div className="flex gap-3 mt-6">
               <button onClick={() => setShowForm(false)} className="flex-1 py-3 rounded-full text-sm border"
-                style={{ border: '1.5px solid var(--deep)', color: 'var(--deep)' }}>
+                style={{ border: '1.5px solid var(--border)', color: 'var(--muted)' }}>
                 Cancelar
               </button>
               <button onClick={saveGift} disabled={saving || !form.nome.trim()}
                 className="flex-1 py-3 rounded-full text-sm font-medium text-white disabled:opacity-60"
-                style={{ background: 'var(--deep)' }}>
+                style={{ background: 'var(--accent)', color: '#0d0d0d' }}>
                 {saving ? 'Salvando…' : editId ? 'Salvar' : 'Adicionar'}
               </button>
             </div>
@@ -195,17 +195,17 @@ export default function AdminGiftsPage() {
       {/* DELETE CONFIRM */}
       {deleteId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6"
-          style={{ background: 'rgba(58,37,32,0.45)', backdropFilter: 'blur(4px)' }}>
-          <div className="rounded-2xl p-7 w-full max-w-sm animate-slide-up text-center" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+          style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}>
+          <div className="rounded-2xl p-7 w-full max-w-sm animate-slide-up text-center" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
             <div className="text-3xl mb-3">🗑️</div>
-            <h3 className="font-serif text-xl mb-2" style={{ color: 'var(--deep)' }}>Remover presente?</h3>
+            <h3 className="font-serif text-xl mb-2" style={{ color: 'var(--text)' }}>Remover presente?</h3>
             <p className="text-sm mb-6" style={{ color: 'var(--muted)' }}>Essa ação não pode ser desfeita.</p>
             <div className="flex gap-3">
               <button onClick={() => setDeleteId(null)} className="flex-1 py-3 rounded-full text-sm border"
                 style={{ border: '1.5px solid var(--border)', color: 'var(--muted)' }}>Cancelar</button>
               <button onClick={() => deleteGift(deleteId)}
                 className="flex-1 py-3 rounded-full text-sm font-medium text-white"
-                style={{ background: '#b03030' }}>Remover</button>
+                style={{ background: 'var(--danger)' }}>Remover</button>
             </div>
           </div>
         </div>
@@ -215,3 +215,6 @@ export default function AdminGiftsPage() {
     </div>
   )
 }
+
+
+

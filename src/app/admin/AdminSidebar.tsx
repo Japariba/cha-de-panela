@@ -23,13 +23,13 @@ export default function AdminSidebar() {
   return (
     <aside
       className="w-full md:w-56 md:flex-shrink-0 flex flex-col px-3 py-3 md:py-8 md:px-4 gap-3 md:gap-0 sticky top-0 z-30"
-      style={{ background: 'var(--card)', borderRight: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}
+      style={{ background: 'var(--surface)', borderRight: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}
     >
       <div className="text-center md:mb-8">
         <div className="flex justify-center mb-1">
           <Shield size={22} />
         </div>
-        <div className="font-serif text-sm font-semibold" style={{ color: 'var(--deep)' }}>Admin</div>
+        <div className="font-serif text-sm font-semibold" style={{ color: 'var(--text)' }}>Admin</div>
         <div className="text-xs" style={{ color: 'var(--muted)' }}>Gustavo & Rebeca</div>
       </div>
 
@@ -43,8 +43,8 @@ export default function AdminSidebar() {
                 href={href}
                 className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm transition-all whitespace-nowrap"
                 style={{
-                  background: active ? 'var(--deep)' : 'transparent',
-                  color: active ? 'var(--cream)' : 'var(--muted)',
+                  background: active ? 'var(--accent)' : 'transparent',
+                  color: active ? '#0d0d0d' : 'var(--muted)',
                   fontWeight: active ? '500' : '400',
                 }}
               >
@@ -58,7 +58,7 @@ export default function AdminSidebar() {
       <div className="grid grid-cols-2 md:grid-cols-1 gap-1 md:mt-4">
         <Link
           href="/"
-          className="flex items-center justify-center md:justify-start gap-2 px-3 py-2.5 rounded-xl text-sm transition-all hover:opacity-80"
+          className="flex items-center justify-center md:justify-start gap-2 px-3 py-2.5 rounded-xl text-sm transition-all hover:text-[var(--text)]"
           style={{ color: 'var(--muted)' }}
         >
           <House size={16} /> Voltar ao site
@@ -66,7 +66,7 @@ export default function AdminSidebar() {
 
         <button
           onClick={logout}
-          className="flex items-center justify-center md:justify-start gap-2 px-3 py-2.5 rounded-xl text-sm transition-all hover:opacity-80"
+          className="flex items-center justify-center md:justify-start gap-2 px-3 py-2.5 rounded-xl text-sm transition-all hover:text-[var(--text)]"
           style={{ color: 'var(--muted)' }}
         >
           <LogOut size={16} /> Sair

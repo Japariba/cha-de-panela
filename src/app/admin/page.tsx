@@ -21,30 +21,30 @@ export default async function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl md:text-3xl font-light mb-1" style={{ color: 'var(--deep)' }}>Dashboard</h1>
+      <h1 className="font-serif text-2xl md:text-3xl font-light mb-1" style={{ color: 'var(--text)' }}>Dashboard</h1>
       <p className="text-sm mb-8" style={{ color: 'var(--muted)' }}>Visao geral do Cha de Panela - 29/03/2026</p>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 mb-8 md:mb-10">
         {stats.map(({ label, value, icon: Icon }) => (
-          <div key={label} className="rounded-2xl p-4 md:p-5 text-center" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+          <div key={label} className="rounded-2xl p-4 md:p-5 text-center" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
             <div className="mb-1 flex justify-center">
               <Icon size={18} />
             </div>
-            <div className="font-serif text-2xl md:text-3xl font-light" style={{ color: 'var(--deep)' }}>{value}</div>
+            <div className="font-serif text-2xl md:text-3xl font-light" style={{ color: 'var(--text)' }}>{value}</div>
             <div className="text-xs mt-1 leading-tight" style={{ color: 'var(--muted)' }}>{label}</div>
           </div>
         ))}
       </div>
 
       <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--border)' }}>
-        <div className="px-4 md:px-5 py-4" style={{ borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
-          <h2 className="font-serif text-xl" style={{ color: 'var(--deep)' }}>Confirmacoes recentes</h2>
+        <div className="px-4 md:px-5 py-4" style={{ borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
+          <h2 className="font-serif text-xl" style={{ color: 'var(--text)' }}>Confirmacoes recentes</h2>
         </div>
         {!guests?.length ? (
-          <div className="px-5 py-8 text-center text-sm italic" style={{ color: 'var(--muted)', background: 'var(--card)' }}>Nenhuma confirmacao ainda.</div>
+          <div className="px-5 py-8 text-center text-sm italic" style={{ color: 'var(--muted)', background: 'var(--surface)' }}>Nenhuma confirmacao ainda.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] text-sm" style={{ background: 'var(--card)' }}>
+            <table className="w-full min-w-[640px] text-sm" style={{ background: 'var(--surface)' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border)' }}>
                   {['Nome', 'WhatsApp', 'Status', '+Acomp.'].map(h => (
@@ -55,18 +55,18 @@ export default async function AdminDashboard() {
               <tbody>
                 {(guests as Array<{ id: string; nome: string; telefone: string | null; confirmou: boolean; qtd_acompanhantes: number }>)
                   .slice(0, 10).map(g => (
-                  <tr key={g.id} style={{ borderBottom: '1px solid #f0e8e0' }}>
-                    <td className="px-5 py-3">{g.nome}</td>
-                    <td className="px-5 py-3" style={{ color: 'var(--muted)' }}>{g.telefone || '-'}</td>
+                  <tr key={g.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                    <td className="px-5 py-3" style={{ color: 'var(--text)' }}>{g.nome}</td>
+                    <td className="px-5 py-3" style={{ color: 'var(--text)' }}>{g.telefone || '-'}</td>
                     <td className="px-5 py-3">
                       <span
                         className="text-xs px-2.5 py-0.5 rounded-full font-medium"
-                        style={g.confirmou ? { background: '#edf6ea', color: '#4a8c40' } : { background: '#fde8e8', color: '#b03030' }}
+                        style={g.confirmou ? { background: '#1a2a1a', color: '#8fd08f' } : { background: '#2a1616', color: '#d27f7f' }}
                       >
                         {g.confirmou ? 'Confirmado' : 'Nao vai'}
                       </span>
                     </td>
-                    <td className="px-5 py-3" style={{ color: 'var(--muted)' }}>{g.confirmou ? `+${g.qtd_acompanhantes}` : '-'}</td>
+                    <td className="px-5 py-3" style={{ color: 'var(--text)' }}>{g.confirmou ? `+${g.qtd_acompanhantes}` : '-'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -77,3 +77,4 @@ export default async function AdminDashboard() {
     </div>
   )
 }
+
