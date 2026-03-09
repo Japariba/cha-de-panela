@@ -11,27 +11,32 @@ const statusStyle: Record<string, { bg: string; color: string; label: string }> 
   pago:       { bg: '#271f31', color: '#b79adb', label: '🟣 Pago via Pix' },
 }
 
+type PublicGift = Pick<Gift, 'id' | 'nome' | 'descricao' | 'valor_sugerido' | 'status' | 'icone'>
+
 export default function GiftsList() {
   const supabase = createClient()
-  const [gifts, setGifts] = useState<Gift[]>([])
+  const [gifts, setGifts] = useState<PublicGift[]>([])
   const [loading, setLoading] = useState(true)
   const [toast, setToast] = useState('')
 
   // Modal state
-  const [modal, setModal] = useState<{ gift: Gift; type: 'pix' | 'fisico' } | null>(null)
+  const [modal, setModal] = useState<{ gift: PublicGift; type: 'pix' | 'fisico' } | null>(null)
   const [nome, setNome] = useState('')
   const [saving, setSaving] = useState(false)
   const [modalError, setModalError] = useState('')
 
   const fetchGifts = useCallback(async () => {
-    const { data } = await supabase.from('presentes').select('*').order('nome')
+    const { data } = await supabase
+      .from('presentes')
+      .select('id,nome,descricao,valor_sugerido,status,icone')
+      .order('nome')
     setGifts(data || [])
     setLoading(false)
   }, [supabase])
 
   useEffect(() => { fetchGifts() }, [fetchGifts])
 
-  const openModal = (gift: Gift, type: 'pix' | 'fisico') => {
+  const openModal = (gift: PublicGift, type: 'pix' | 'fisico') => {
     setNome(''); setModalError('')
     setModal({ gift, type })
   }
@@ -91,9 +96,6 @@ export default function GiftsList() {
                 <span className="inline-block text-xs px-3 py-0.5 rounded-full font-medium" style={{ background: st.bg, color: st.color }}>
                   {st.label}
                 </span>
-                {gift.reservado_por && (
-                  <div className="text-xs italic mt-1" style={{ color: 'var(--muted)' }}>por {gift.reservado_por}</div>
-                )}
               </div>
               {!taken && (
                 <div className="flex flex-col gap-2 flex-shrink-0">
@@ -183,5 +185,3 @@ export default function GiftsList() {
     </>
   )
 }
-
-
