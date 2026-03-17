@@ -11,7 +11,7 @@ const statusStyle: Record<string, { bg: string; color: string; label: string }> 
   pago:       { bg: '#271f31', color: '#b79adb', label: '🟣 Pago via Pix' },
 }
 
-type PublicGift = Pick<Gift, 'id' | 'nome' | 'descricao' | 'valor_sugerido' | 'status' | 'icone'>
+type PublicGift = Pick<Gift, 'id' | 'nome' | 'descricao' | 'valor_sugerido' | 'status' | 'icone' | 'reservado_por'>
 
 export default function GiftsList() {
   const supabase = createClient()
@@ -28,7 +28,7 @@ export default function GiftsList() {
   const fetchGifts = useCallback(async () => {
     const { data } = await supabase
       .from('presentes')
-      .select('id,nome,descricao,valor_sugerido,status,icone')
+      .select('id,nome,descricao,valor_sugerido,status,icone,reservado_por')
       .order('nome')
     setGifts(data || [])
     setLoading(false)
@@ -96,6 +96,11 @@ export default function GiftsList() {
                 <span className="inline-block text-xs px-3 py-0.5 rounded-full font-medium" style={{ background: st.bg, color: st.color }}>
                   {st.label}
                 </span>
+                {taken && gift.reservado_por && (
+                  <div className="text-xs italic mt-1" style={{ color: 'var(--muted)' }}>
+                    por {gift.reservado_por}
+                  </div>
+                )}
               </div>
               {!taken && (
                 <div className="flex flex-col gap-2 flex-shrink-0">
