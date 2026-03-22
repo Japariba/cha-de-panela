@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar'
 import { createClient } from '@/lib/supabase/client'
 
 export default function RSVPPage() {
-  const supabase = createClient()
+  const [supabase] = useState(() => createClient())
   const [nome, setNome] = useState('')
   const [telefone, setTelefone] = useState('')
   const [vai, setVai] = useState<'sim' | 'nao'>('sim')
@@ -16,12 +16,13 @@ export default function RSVPPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!nome.trim()) { setError('Por favor, informe seu nome.'); return }
+    const trimmedName = nome.trim()
+    if (!trimmedName) { setError('Por favor, informe seu nome.'); return }
     setLoading(true)
     setError('')
 
     const { error: dbError } = await supabase.from('convidados').insert({
-      nome: nome.trim(),
+      nome: trimmedName,
       telefone: telefone.trim() || null,
       confirmou: vai === 'sim',
       qtd_acompanhantes: vai === 'sim' ? acomp : 0,

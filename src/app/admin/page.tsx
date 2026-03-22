@@ -3,10 +3,11 @@ import { CreditCard, Gift, Mail, Users, Wallet } from 'lucide-react'
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
-  const [{ data: guests }, { data: gifts }] = await Promise.all([
-    supabase.from('convidados').select('*'),
+  const [{ data: guests, error: guestsError }, { data: gifts, error: giftsError }] = await Promise.all([
+    supabase.from('convidados').select('*').order('created_at', { ascending: false }),
     supabase.from('presentes').select('*'),
   ])
+  const loadError = guestsError || giftsError
 
   const confirmed = (guests || []).filter((g: { confirmou: boolean }) => g.confirmou)
   const totalPessoas = confirmed.reduce((s: number, g: { qtd_acompanhantes: number }) => s + 1 + g.qtd_acompanhantes, 0)
@@ -23,6 +24,12 @@ export default async function AdminDashboard() {
     <div>
       <h1 className="font-serif text-2xl md:text-3xl font-light mb-1" style={{ color: 'var(--text)' }}>Dashboard</h1>
       <p className="text-sm mb-8" style={{ color: 'var(--muted)' }}>Visao geral do Cha de Panela - 29/03/2026</p>
+
+      {loadError && (
+        <div className="mb-6 rounded-2xl px-4 py-3 text-sm" style={{ background: '#2a1616', border: '1px solid #5a2a2a', color: '#f0b4b4' }}>
+          Não foi possível carregar todos os dados do painel agora. Atualize a página e tente novamente.
+        </div>
+      )}
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 mb-8 md:mb-10">
         {stats.map(({ label, value, icon: Icon }) => (

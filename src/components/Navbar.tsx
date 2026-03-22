@@ -23,7 +23,9 @@ export default function Navbar() {
       </Link>
       <div className="flex items-center flex-wrap gap-2">
         {links.map(({ href, label }) => {
-          const active = pathname === href
+          const active = href === '/presenca'
+            ? pathname === '/presenca' || pathname === '/rsvp'
+            : pathname === href
           return (
             <Link
               key={href}

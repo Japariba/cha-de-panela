@@ -11,7 +11,7 @@ type GuestRow = {
 
 export default async function AdminGuestsPage() {
   const supabase = await createClient()
-  const { data: guests } = await supabase
+  const { data: guests, error } = await supabase
     .from('convidados')
     .select('*')
     .order('created_at', { ascending: false })
@@ -31,6 +31,12 @@ export default async function AdminGuestsPage() {
       <p className="text-sm mb-6" style={{ color: 'var(--muted)' }}>
         {confirmed.length} confirmados - {declined.length} nao vao - {totalPessoas} pessoas no total
       </p>
+
+      {error && (
+        <div className="mb-6 rounded-2xl px-4 py-3 text-sm" style={{ background: '#2a1616', border: '1px solid #5a2a2a', color: '#f0b4b4' }}>
+          Não foi possível carregar a lista de convidados agora. Atualize a página e tente novamente.
+        </div>
+      )}
 
       <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--border)' }}>
         {!guests?.length ? (

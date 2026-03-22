@@ -71,7 +71,7 @@ src/
       client.ts
       server.ts
     types.ts
-  proxy.ts
+  middleware.ts
 scripts/
   import-gifts.mjs
 supabase_schema.sql
@@ -136,7 +136,7 @@ npm run import:gifts
 ```
 
 ## Autenticacao e seguranca
-- Rotas `/admin/*` sao protegidas em `src/proxy.ts`.
+- Rotas `/admin/*` sao protegidas em `src/middleware.ts`.
 - Usuario nao autenticado em rota admin e redirecionado para `/admin/login`.
 - Usuario autenticado em `/admin/login` e redirecionado para `/admin`.
 - RLS habilitado em `convidados` e `presentes` no banco.

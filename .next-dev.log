@@ -1,0 +1,22 @@
+
+> cha-de-panela@1.0.0 dev
+> next dev --port 3003
+
+   ▲ Next.js 15.2.8
+   - Local:        http://localhost:3003
+   - Network:      http://192.168.5.234:3003
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1604ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1259ms (738 modules)
+ GET / 200 in 1526ms
+ ✓ Compiled in 126ms (327 modules)
+ ✓ Compiled /middleware in 237ms (491 modules)
+ ○ Compiling /admin/login ...
+ ✓ Compiled /admin/login in 541ms (1533 modules)
+ GET /admin/login 200 in 680ms
+ ✓ Compiled in 766ms (814 modules)
+ ✓ Compiled in 492ms (828 modules)
+ ✓ Compiled in 141ms (337 modules)

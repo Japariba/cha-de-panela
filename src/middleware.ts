@@ -15,13 +15,18 @@ export async function proxy(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() { return request.cookies.getAll() },
-        setAll(cookiesToSet: CookieToSet[]) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+        get(name: string) {
+          return request.cookies.get(name)?.value
+        },
+        set(name: string, value: string, options: CookieToSet['options']) {
+          request.cookies.set(name, value)
           supabaseResponse = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options as never)
-          )
+          supabaseResponse.cookies.set(name, value, options as never)
+        },
+        remove(name: string, options: CookieToSet['options']) {
+          request.cookies.set(name, '')
+          supabaseResponse = NextResponse.next({ request })
+          supabaseResponse.cookies.set(name, '', { ...(options || {}), maxAge: 0 } as never)
         },
       },
     }
@@ -40,6 +45,10 @@ export async function proxy(request: NextRequest) {
   }
 
   return supabaseResponse
+}
+
+export async function middleware(request: NextRequest) {
+  return proxy(request)
 }
 
 export const config = {

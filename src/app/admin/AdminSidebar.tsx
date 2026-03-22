@@ -1,8 +1,7 @@
 'use client'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { Gift, House, LayoutDashboard, LogOut, Shield, Users } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
 
 const navItems = [
   { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
@@ -12,13 +11,6 @@ const navItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname()
-  const router = useRouter()
-  const supabase = createClient()
-
-  const logout = async () => {
-    await supabase.auth.signOut()
-    router.push('/admin/login')
-  }
 
   return (
     <aside
@@ -64,13 +56,15 @@ export default function AdminSidebar() {
           <House size={16} /> Voltar ao site
         </Link>
 
-        <button
-          onClick={logout}
-          className="flex items-center justify-center md:justify-start gap-2 px-3 py-2.5 rounded-xl text-sm transition-all hover:text-[var(--text)]"
-          style={{ color: 'var(--muted)' }}
-        >
-          <LogOut size={16} /> Sair
-        </button>
+        <form action="/auth/logout" method="post">
+          <button
+            type="submit"
+            className="w-full flex items-center justify-center md:justify-start gap-2 px-3 py-2.5 rounded-xl text-sm transition-all hover:text-[var(--text)]"
+            style={{ color: 'var(--muted)' }}
+          >
+            <LogOut size={16} /> Sair
+          </button>
+        </form>
       </div>
     </aside>
   )

@@ -14,9 +14,10 @@ const statusStyle: Record<string, { bg: string; color: string; label: string }> 
 type PublicGift = Pick<Gift, 'id' | 'nome' | 'descricao' | 'valor_sugerido' | 'status' | 'icone' | 'reservado_por'>
 
 export default function GiftsList() {
-  const supabase = createClient()
+  const [supabase] = useState(() => createClient())
   const [gifts, setGifts] = useState<PublicGift[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
   const [toast, setToast] = useState('')
 
   // Modal state
@@ -26,39 +27,71 @@ export default function GiftsList() {
   const [modalError, setModalError] = useState('')
 
   const fetchGifts = useCallback(async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('presentes')
       .select('id,nome,descricao,valor_sugerido,status,icone,reservado_por')
       .order('nome')
+    if (error) {
+      setGifts([])
+      setLoadError('Não foi possível carregar a lista de presentes agora. Tente novamente em instantes.')
+      setLoading(false)
+      return
+    }
+    setLoadError('')
     setGifts(data || [])
     setLoading(false)
   }, [supabase])
 
-  useEffect(() => { fetchGifts() }, [fetchGifts])
+  useEffect(() => { void fetchGifts() }, [fetchGifts])
 
   const openModal = (gift: PublicGift, type: 'pix' | 'fisico') => {
-    setNome(''); setModalError('')
+    setNome('')
+    setModalError('')
+    setSaving(false)
     setModal({ gift, type })
   }
-  const closeModal = () => setModal(null)
+  const closeModal = () => {
+    setSaving(false)
+    setModalError('')
+    setModal(null)
+  }
 
   const confirm = async () => {
-    if (!nome.trim()) { setModalError('Por favor, informe seu nome.'); return }
     if (!modal) return
+    const trimmedName = nome.trim()
+    if (!trimmedName) { setModalError('Por favor, informe seu nome.'); return }
+
     setSaving(true)
-    const { error } = await supabase.from('presentes').update({
-      status: modal.type === 'pix' ? 'pago' : 'reservado',
-      reservado_por: nome.trim(),
-      tipo_entrega: modal.type,
-    }).eq('id', modal.gift.id).eq('status', 'disponivel') // guard: only update if still available
+    setModalError('')
+
+    const { data, error } = await supabase
+      .from('presentes')
+      .update({
+        status: modal.type === 'pix' ? 'pago' : 'reservado',
+        reservado_por: trimmedName,
+        tipo_entrega: modal.type,
+      })
+      .eq('id', modal.gift.id)
+      .eq('status', 'disponivel')
+      .select('id')
+      .maybeSingle()
+
     setSaving(false)
     if (error) { setModalError('Erro ao reservar. Tente novamente.'); return }
+
+    if (!data) {
+      await fetchGifts()
+      setModalError('Este presente acabou de ser reservado por outra pessoa. Escolha outro item.')
+      return
+    }
+
     closeModal()
-    fetchGifts()
-    setToast(modal.type === 'pix' ? `🎉 Obrigada, ${nome}! Pagamento registrado.` : `✅ Reservado para ${nome}! 🛍️`)
+    await fetchGifts()
+    setToast(modal.type === 'pix' ? `🎉 Obrigada, ${trimmedName}! Pagamento registrado.` : `✅ Reservado para ${trimmedName}! 🛍️`)
   }
 
   if (loading) return <div className="text-center py-16 text-sm" style={{ color: 'var(--muted)' }}>Carregando…</div>
+  if (loadError) return <div className="text-center py-16 text-sm" style={{ color: '#d27f7f' }}>{loadError}</div>
   if (!gifts.length) return (
     <div className="text-center py-16 text-sm" style={{ color: 'var(--muted)' }}>
       A lista de presentes ainda não foi cadastrada. Volte em breve! 🌷

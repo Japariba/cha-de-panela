@@ -15,57 +15,112 @@ const statusStyle: Record<string, { bg: string; color: string; label: string }> 
 }
 
 export default function AdminGiftsPage() {
-  const supabase = createClient()
+  const [supabase] = useState(() => createClient())
   const [gifts, setGifts] = useState<Gift[]>([])
   const [loading, setLoading] = useState(true)
+  const [pageError, setPageError] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState(emptyForm)
+  const [formError, setFormError] = useState('')
   const [editId, setEditId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [toast, setToast] = useState('')
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
   const fetchGifts = useCallback(async () => {
-    const { data } = await supabase.from('presentes').select('*').order('nome')
-    setGifts(data || []); setLoading(false)
+    const { data, error } = await supabase.from('presentes').select('*').order('nome')
+    if (error) {
+      setGifts([])
+      setPageError('Não foi possível carregar os presentes agora. Tente novamente em instantes.')
+      setLoading(false)
+      return
+    }
+    setGifts(data || [])
+    setPageError('')
+    setLoading(false)
   }, [supabase])
 
-  useEffect(() => { fetchGifts() }, [fetchGifts])
+  useEffect(() => { void fetchGifts() }, [fetchGifts])
 
-  const openAdd = () => { setForm(emptyForm); setEditId(null); setShowForm(true) }
+  const openAdd = () => {
+    setForm(emptyForm)
+    setEditId(null)
+    setFormError('')
+    setShowForm(true)
+  }
   const openEdit = (g: Gift) => {
     setForm({ nome: g.nome, descricao: g.descricao || '', valor_sugerido: g.valor_sugerido?.toString() || '', icone: g.icone || '🎁' })
-    setEditId(g.id); setShowForm(true)
+    setEditId(g.id)
+    setFormError('')
+    setShowForm(true)
   }
 
   const saveGift = async () => {
-    if (!form.nome.trim()) return
+    const trimmedName = form.nome.trim()
+    if (!trimmedName) {
+      setFormError('Informe o nome do presente.')
+      return
+    }
+
+    const rawSuggestedValue = form.valor_sugerido.trim()
+    const parsedSuggestedValue = rawSuggestedValue ? Number(rawSuggestedValue.replace(',', '.')) : null
+    if (rawSuggestedValue && (Number.isNaN(parsedSuggestedValue) || parsedSuggestedValue === null || parsedSuggestedValue < 0)) {
+      setFormError('Informe um valor sugerido válido.')
+      return
+    }
+
     setSaving(true)
+    setFormError('')
     const payload = {
-      nome: form.nome.trim(),
+      nome: trimmedName,
       descricao: form.descricao.trim() || null,
-      valor_sugerido: form.valor_sugerido ? parseFloat(form.valor_sugerido.replace(',', '.')) : null,
+      valor_sugerido: parsedSuggestedValue,
       icone: form.icone,
     }
+
+    const { error } = editId
+      ? await supabase.from('presentes').update(payload).eq('id', editId)
+      : await supabase.from('presentes').insert({ ...payload, status: 'disponivel', reservado_por: null, tipo_entrega: null })
+
+    setSaving(false)
+    if (error) {
+      setFormError('Não foi possível salvar o presente. Tente novamente.')
+      return
+    }
+
     if (editId) {
-      await supabase.from('presentes').update(payload).eq('id', editId)
       setToast('✅ Presente atualizado!')
     } else {
-      await supabase.from('presentes').insert({ ...payload, status: 'disponivel', reservado_por: null, tipo_entrega: null })
       setToast('✅ Presente adicionado!')
     }
-    setSaving(false); setShowForm(false); fetchGifts()
+    setShowForm(false)
+    await fetchGifts()
   }
 
   const resetGift = async (id: string) => {
-    await supabase.from('presentes').update({ status: 'disponivel', reservado_por: null, tipo_entrega: null }).eq('id', id)
+    setPageError('')
+    const { error } = await supabase
+      .from('presentes')
+      .update({ status: 'disponivel', reservado_por: null, tipo_entrega: null })
+      .eq('id', id)
+    if (error) {
+      setPageError('Não foi possível liberar o presente agora.')
+      return
+    }
     setToast('🔄 Presente liberado novamente.')
-    fetchGifts()
+    await fetchGifts()
   }
 
   const deleteGift = async (id: string) => {
-    await supabase.from('presentes').delete().eq('id', id)
-    setDeleteId(null); setToast('🗑️ Presente removido.'); fetchGifts()
+    setPageError('')
+    const { error } = await supabase.from('presentes').delete().eq('id', id)
+    if (error) {
+      setPageError('Não foi possível remover o presente agora.')
+      return
+    }
+    setDeleteId(null)
+    setToast('🗑️ Presente removido.')
+    await fetchGifts()
   }
 
   return (
@@ -83,6 +138,8 @@ export default function AdminGiftsPage() {
           + Adicionar presente
         </button>
       </div>
+
+      {pageError && <p className="mb-4 text-sm text-red-500">{pageError}</p>}
 
       {loading ? (
         <div className="text-center py-12 text-sm" style={{ color: 'var(--muted)' }}>Carregando…</div>
@@ -176,6 +233,8 @@ export default function AdminGiftsPage() {
                 </div>
               ))}
             </div>
+
+            {formError && <p className="mt-4 text-sm text-red-500">{formError}</p>}
 
             <div className="flex gap-3 mt-6">
               <button onClick={() => setShowForm(false)} className="flex-1 py-3 rounded-full text-sm border"
