@@ -73,7 +73,7 @@ BEGIN
     RAISE EXCEPTION 'Visitantes não podem editar os dados do presente.';
   END IF;
 
-  IF NEW.status NOT IN ('reservado', 'pago') THEN
+  IF NEW.status <> 'reservado' THEN
     RAISE EXCEPTION 'Status inválido para reserva pública.';
   END IF;
 
@@ -81,8 +81,7 @@ BEGIN
     RAISE EXCEPTION 'Informe quem reservou o presente.';
   END IF;
 
-  IF (NEW.status = 'pago' AND NEW.tipo_entrega IS DISTINCT FROM 'pix')
-     OR (NEW.status = 'reservado' AND NEW.tipo_entrega IS DISTINCT FROM 'fisico') THEN
+  IF NEW.tipo_entrega IS DISTINCT FROM 'fisico' THEN
     RAISE EXCEPTION 'Tipo de entrega incompatível com o status.';
   END IF;
 

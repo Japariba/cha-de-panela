@@ -2,7 +2,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { Gift } from '@/lib/types'
-import { EVENT_INFO } from '@/lib/types'
 import Toast from '@/components/Toast'
 
 const statusStyle: Record<string, { bg: string; color: string; label: string }> = {
@@ -21,7 +20,7 @@ export default function GiftsList() {
   const [toast, setToast] = useState('')
 
   // Modal state
-  const [modal, setModal] = useState<{ gift: PublicGift; type: 'pix' | 'fisico' } | null>(null)
+  const [modal, setModal] = useState<PublicGift | null>(null)
   const [nome, setNome] = useState('')
   const [saving, setSaving] = useState(false)
   const [modalError, setModalError] = useState('')
@@ -44,11 +43,11 @@ export default function GiftsList() {
 
   useEffect(() => { void fetchGifts() }, [fetchGifts])
 
-  const openModal = (gift: PublicGift, type: 'pix' | 'fisico') => {
+  const openModal = (gift: PublicGift) => {
     setNome('')
     setModalError('')
     setSaving(false)
-    setModal({ gift, type })
+    setModal(gift)
   }
   const closeModal = () => {
     setSaving(false)
@@ -67,11 +66,11 @@ export default function GiftsList() {
     const { data, error } = await supabase
       .from('presentes')
       .update({
-        status: modal.type === 'pix' ? 'pago' : 'reservado',
+        status: 'reservado',
         reservado_por: trimmedName,
-        tipo_entrega: modal.type,
+        tipo_entrega: 'fisico',
       })
-      .eq('id', modal.gift.id)
+      .eq('id', modal.id)
       .eq('status', 'disponivel')
       .select('id')
       .maybeSingle()
@@ -87,7 +86,7 @@ export default function GiftsList() {
 
     closeModal()
     await fetchGifts()
-    setToast(modal.type === 'pix' ? `🎉 Obrigada, ${trimmedName}! Pagamento registrado.` : `✅ Reservado para ${trimmedName}! 🛍️`)
+    setToast(`✅ Reservado para ${trimmedName}! 🛍️`)
   }
 
   if (loading) return <div className="text-center py-16 text-sm" style={{ color: 'var(--muted)' }}>Carregando…</div>
@@ -138,14 +137,7 @@ export default function GiftsList() {
               {!taken && (
                 <div className="flex flex-col gap-2 flex-shrink-0">
                   <button
-                    onClick={() => openModal(gift, 'pix')}
-                    className="text-xs font-medium px-3 py-2 rounded-full transition-all hover:-translate-y-0.5"
-                    style={{ background: 'var(--accent)', color: '#0d0d0d' }}
-                  >
-                    💳 Pix
-                  </button>
-                  <button
-                    onClick={() => openModal(gift, 'fisico')}
+                    onClick={() => openModal(gift)}
                     className="text-xs font-medium px-3 py-2 rounded-full transition-all hover:-translate-y-0.5"
                     style={{ background: 'var(--accent-2)', color: '#0d0d0d' }}
                   >
@@ -167,23 +159,11 @@ export default function GiftsList() {
         >
           <div className="rounded-2xl p-7 w-full max-w-sm animate-slide-up" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
             <h3 className="font-serif text-2xl mb-1" style={{ color: 'var(--text)' }}>
-              {modal.type === 'pix' ? '💳 Presentear via Pix' : '🛍️ Vou comprar e levar!'}
+              🛍️ Vou comprar e levar!
             </h3>
             <p className="text-xs mb-4 leading-relaxed" style={{ color: 'var(--muted)' }}>
-              Você escolheu: <strong>{modal.gift.nome}</strong>.{' '}
-              {modal.type === 'pix' ? 'Realize o pagamento e confirme seu nome.' : 'Reservaremos o item no seu nome.'}
+              Você escolheu: <strong>{modal.nome}</strong>. Reservaremos o item no seu nome.
             </p>
-
-            {modal.type === 'pix' && (
-              <div className="rounded-xl p-4 text-center mb-4" style={{ background: 'var(--surface-2)', border: '1px dashed var(--border)' }}>
-                <div className="text-sm font-semibold break-all mb-1" style={{ color: 'var(--text)' }}>{EVENT_INFO.chave_pix}</div>
-                {modal.gift.valor_sugerido && (
-                  <div className="text-xs" style={{ color: 'var(--muted)' }}>
-                    Valor sugerido: R$ {modal.gift.valor_sugerido.toFixed(2).replace('.', ',')}
-                  </div>
-                )}
-              </div>
-            )}
 
             <label className="block text-xs uppercase tracking-wider font-medium mb-2" style={{ color: 'var(--muted)' }}>
               Seu nome
@@ -210,9 +190,9 @@ export default function GiftsList() {
                 onClick={confirm}
                 disabled={saving}
                 className="flex-1 py-3 rounded-full text-sm font-medium text-white transition-all disabled:opacity-60"
-                style={{ background: modal.type === 'pix' ? 'var(--accent)' : 'var(--accent-2)', color: '#0d0d0d' }}
+                style={{ background: 'var(--accent-2)', color: '#0d0d0d' }}
               >
-                {saving ? 'Salvando…' : modal.type === 'pix' ? 'Confirmar ✓' : 'Reservar ✓'}
+                {saving ? 'Salvando…' : 'Reservar ✓'}
               </button>
             </div>
           </div>

@@ -3,7 +3,7 @@
 Aplicacao web para:
 - pagina publica do evento
 - confirmacao de presenca
-- lista de presentes com reserva/pagamento
+- lista de presentes com reserva
 - painel administrativo protegido por login Supabase
 
 Projeto em Next.js + Supabase, pronto para deploy na Vercel.
@@ -19,9 +19,7 @@ Projeto em Next.js + Supabase, pronto para deploy na Vercel.
 ## Funcionalidades
 - Home com informacoes do evento, link de localizacao e chave Pix.
 - Confirmacao de presenca em formulario publico.
-- Lista de presentes publica com duas opcoes:
-  - marcar como `pago` (Pix)
-  - marcar como `reservado` (compra fisica)
+- Lista de presentes publica com reserva de item para compra fisica
 - Painel admin com:
   - dashboard de metricas
   - CRUD de presentes
